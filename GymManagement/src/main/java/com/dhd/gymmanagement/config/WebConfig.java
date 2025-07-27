@@ -1,4 +1,19 @@
 package com.dhd.gymmanagement.config;
 
-public class WebConfig {
+import com.dhd.gymmanagement.formatters.CategoryFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private CategoryFormatter categoryFormatter;
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(categoryFormatter);
+    }
 }

@@ -32,6 +32,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/login", "/api/user").permitAll()
                 .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/login", "/register", "/forgot-password").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
+                .requestMatchers("/admin").hasRole("ADMIN") // Trang chủ admin
+                .requestMatchers("/admin/**").hasRole("ADMIN") // Các trang admin khác
+                .requestMatchers("/pt/**").hasAnyRole("PT", "ADMIN") // Yêu cầu role PT hoặc ADMIN
+                .requestMatchers("/user/**").authenticated() // Yêu cầu authentication cho user
                 .anyRequest().permitAll()
             )
             .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
