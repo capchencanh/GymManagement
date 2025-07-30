@@ -43,7 +43,6 @@ public class DietItem {
         BREAKFAST, LUNCH, DINNER, SNACK
     }
 
-    // Getters and setters
     public Integer getDietItemId() { return dietItemId; }
     public void setDietItemId(Integer dietItemId) { this.dietItemId = dietItemId; }
     public DietPlan getDietPlan() { return dietPlan; }

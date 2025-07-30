@@ -21,6 +21,7 @@ public class AdminUserController {
     public String listUsers(Model model, 
                            @RequestParam(required = false) String keyword,
                            @RequestParam(required = false) String role) {
+        
         List<User> users;
         
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -45,7 +46,6 @@ public class AdminUserController {
             users = userService.getAllUsers();
         }
         
-        // Tính toán thống kê
         long totalUsers = users.size();
         long adminCount = users.stream().filter(u -> u.getRole() == User.Role.ADMIN).count();
         long ptCount = users.stream().filter(u -> u.getRole() == User.Role.PT).count();
@@ -60,7 +60,7 @@ public class AdminUserController {
         model.addAttribute("ptCount", ptCount);
         model.addAttribute("userCount", userCount);
         
-        return "admin/user/simple-list";
+        return "admin/user/list";
     }
     
     @GetMapping("/create")
@@ -74,32 +74,35 @@ public class AdminUserController {
     public String createUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
         try {
             userService.createUser(user);
-            redirectAttributes.addFlashAttribute("success", "Tạo tài khoản thành công!");
+            redirectAttributes.addFlashAttribute("success", "Tạo người dùng thành công!");
             return "redirect:/admin/users";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi tạo người dùng: " + e.getMessage());
             return "redirect:/admin/users/create";
         }
     }
     
     @GetMapping("/edit/{id}")
     public String editUserForm(@PathVariable Integer id, Model model) {
-        User user = userService.getUserById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
-        
-        model.addAttribute("user", user);
-        model.addAttribute("roles", User.Role.values());
-        return "admin/user/form";
+        try {
+            User user = userService.getUserById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+            model.addAttribute("user", user);
+            model.addAttribute("roles", User.Role.values());
+            return "admin/user/form";
+        } catch (Exception e) {
+            return "redirect:/admin/users";
+        }
     }
     
     @PostMapping("/edit/{id}")
     public String editUser(@PathVariable Integer id, @ModelAttribute User user, RedirectAttributes redirectAttributes) {
         try {
             userService.updateUser(id, user);
-            redirectAttributes.addFlashAttribute("success", "Cập nhật tài khoản thành công!");
+            redirectAttributes.addFlashAttribute("success", "Cập nhật người dùng thành công!");
             return "redirect:/admin/users";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật người dùng: " + e.getMessage());
             return "redirect:/admin/users/edit/" + id;
         }
     }
@@ -108,29 +111,35 @@ public class AdminUserController {
     public String deleteUser(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
             userService.deleteUser(id);
-            redirectAttributes.addFlashAttribute("success", "Xóa tài khoản thành công!");
+            redirectAttributes.addFlashAttribute("success", "Xóa người dùng thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi xóa người dùng: " + e.getMessage());
         }
         return "redirect:/admin/users";
     }
     
     @GetMapping("/view/{id}")
     public String viewUser(@PathVariable Integer id, Model model) {
-        User user = userService.getUserById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
-        
-        model.addAttribute("user", user);
-        return "admin/user/view";
+        try {
+            User user = userService.getUserById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+            model.addAttribute("user", user);
+            return "admin/user/view";
+        } catch (Exception e) {
+            return "redirect:/admin/users";
+        }
     }
     
     @GetMapping("/reset-password/{id}")
     public String resetPasswordForm(@PathVariable Integer id, Model model) {
-        User user = userService.getUserById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
-        
-        model.addAttribute("user", user);
-        return "admin/user/reset-password";
+        try {
+            User user = userService.getUserById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+            model.addAttribute("user", user);
+            return "admin/user/reset-password";
+        } catch (Exception e) {
+            return "redirect:/admin/users";
+        }
     }
     
     @PostMapping("/reset-password/{id}")
@@ -140,9 +149,12 @@ public class AdminUserController {
         try {
             userService.resetPassword(id, newPassword);
             redirectAttributes.addFlashAttribute("success", "Đặt lại mật khẩu thành công!");
+            return "redirect:/admin/users";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi đặt lại mật khẩu: " + e.getMessage());
+            return "redirect:/admin/users/reset-password/" + id;
         }
-        return "redirect:/admin/users";
     }
+
+
 }

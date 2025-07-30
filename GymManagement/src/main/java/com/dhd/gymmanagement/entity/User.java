@@ -50,7 +50,9 @@ public class User {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    // Getters and setters
+    @Column(name = "is_deleted", nullable = false)
+    private int isDeleted = 0;
+
     public Integer getUserId() { return userId; }
     public void setUserId(Integer userId) { this.userId = userId; }
     public String getEmail() { return email; }
@@ -77,8 +79,9 @@ public class User {
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
     public Timestamp getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+    public int getIsDeleted() { return isDeleted; }
+    public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
 
-    // Enum cho role
     public enum Role {
         ADMIN, PT, USER
     }

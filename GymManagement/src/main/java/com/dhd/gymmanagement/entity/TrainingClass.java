@@ -46,7 +46,6 @@ public class TrainingClass {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    // Getters and setters
     public Integer getClassId() { return classId; }
     public void setClassId(Integer classId) { this.classId = classId; }
     public String getName() { return name; }

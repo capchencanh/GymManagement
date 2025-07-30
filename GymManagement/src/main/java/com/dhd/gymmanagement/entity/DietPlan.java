@@ -55,7 +55,6 @@ public class DietPlan {
         ACTIVE, COMPLETED, PAUSED
     }
 
-    // Getters and setters
     public Integer getDietPlanId() { return dietPlanId; }
     public void setDietPlanId(Integer dietPlanId) { this.dietPlanId = dietPlanId; }
     public User getUser() { return user; }

@@ -36,7 +36,6 @@ public class ClassEnrollment {
         ENROLLED, COMPLETED, CANCELLED
     }
 
-    // Getters and setters
     public Integer getEnrollmentId() { return enrollmentId; }
     public void setEnrollmentId(Integer enrollmentId) { this.enrollmentId = enrollmentId; }
     public User getUser() { return user; }

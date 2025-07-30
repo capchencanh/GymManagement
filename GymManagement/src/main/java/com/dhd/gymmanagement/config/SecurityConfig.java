@@ -31,16 +31,28 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/login", "/api/user").permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .requestMatchers("/login", "/register", "/forgot-password").permitAll()
+                .requestMatchers("/login", "/register", "/forgot-password", "/", "/create-admin").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN") // Trang chủ admin
-                .requestMatchers("/admin/**").hasRole("ADMIN") // Các trang admin khác
-                .requestMatchers("/pt/**").hasAnyRole("PT", "ADMIN") // Yêu cầu role PT hoặc ADMIN
-                .requestMatchers("/user/**").authenticated() // Yêu cầu authentication cho user
+                
+                .requestMatchers("/api/**").authenticated()
+                
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                
+                .requestMatchers("/pt/**").hasAnyRole("PT", "ADMIN")
+                
+                .requestMatchers("/user/**").authenticated()
+                
                 .anyRequest().permitAll()
             )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("jwt_token")
+                .permitAll()
+            )
             .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+            
         return http.build();
     }
 

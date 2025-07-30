@@ -35,9 +35,9 @@
                                     <div class="avatar-lg mx-auto mb-3">
                                         <i class="fas fa-user-circle fa-8x text-primary"></i>
                                     </div>
-                                    <h3 th:text="${user.name}"></h3>
-                                    <span th:class="${user.role == 'ADMIN' ? 'badge bg-danger fs-6' : (user.role == 'PT' ? 'badge bg-warning fs-6' : 'badge bg-success fs-6')}"
-                                          th:text="${user.role == 'ADMIN' ? 'Quản trị viên' : (user.role == 'PT' ? 'Huấn luyện viên' : 'Thành viên')}">
+                                    <h3 th:text="${user.name != null ? user.name : 'Không xác định'}"></h3>
+                                    <span th:class="${user.role != null ? (user.role.name() == 'ADMIN' ? 'badge bg-danger fs-6' : (user.role.name() == 'PT' ? 'badge bg-warning fs-6' : 'badge bg-success fs-6')) : 'badge bg-secondary fs-6'}"
+                                          th:text="${user.role != null ? (user.role.name() == 'ADMIN' ? 'Quản trị viên' : (user.role.name() == 'PT' ? 'Huấn luyện viên' : 'Thành viên')) : 'Không xác định'}">
                                     </span>
                                 </div>
                                 
@@ -70,14 +70,14 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Email:</label>
-                                            <p class="form-control-plaintext" th:text="${user.email}"></p>
+                                            <p class="form-control-plaintext" th:text="${user.email != null ? user.email : 'Chưa cập nhật'}"></p>
                                         </div>
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Số điện thoại:</label>
-                                            <p class="form-control-plaintext" th:text="${user.phoneNumber}"></p>
+                                            <p class="form-control-plaintext" th:text="${user.phoneNumber != null ? user.phoneNumber : 'Chưa cập nhật'}"></p>
                                         </div>
                                     </div>
                                     
@@ -85,9 +85,9 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Giới tính:</label>
                                             <p class="form-control-plaintext">
-                                                <span th:if="${user.gender == 'Nam'}" class="badge bg-info">Nam</span>
-                                                <span th:if="${user.gender == 'Nữ'}" class="badge bg-pink">Nữ</span>
-                                                <span th:if="${user.gender == null || user.gender == ''}" class="text-muted">Chưa cập nhật</span>
+                                                <span th:if="${user.gender != null and user.gender == 'Nam'}" class="badge bg-info">Nam</span>
+                                                <span th:if="${user.gender != null and user.gender == 'Nữ'}" class="badge bg-pink">Nữ</span>
+                                                <span th:if="${user.gender == null or user.gender == ''}" class="text-muted">Chưa cập nhật</span>
                                             </p>
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Mục tiêu tập luyện:</label>
                                             <div class="form-control-plaintext" style="min-height: 60px;">
-                                                <span th:text="${user.fitnessGoal != null && !user.fitnessGoal.isEmpty() ? user.fitnessGoal : 'Chưa cập nhật'}"></span>
+                                                <span th:text="${user.fitnessGoal != null and !user.fitnessGoal.isEmpty() ? user.fitnessGoal : 'Chưa cập nhật'}"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -180,8 +180,8 @@
                                     <a th:href="@{/admin/users/reset-password/{id}(id=${user.userId})}" class="btn btn-warning me-2">
                                         <i class="fas fa-key me-1"></i>Đặt lại mật khẩu
                                     </a>
-                                    <button type="button" class="btn btn-danger me-2" 
-                                            th:onclick="'confirmDelete(' + ${user.userId} + ', \'' + ${user.name} + '\')'">
+                                    <button type="button" class="btn btn-danger me-2"
+                                            th:attr="onclick=|confirmDelete(${user.userId}, '${user.name}')|">
                                         <i class="fas fa-trash me-1"></i>Xóa tài khoản
                                     </button>
                                     <a href="/admin/users" class="btn btn-secondary">
@@ -198,7 +198,6 @@
     
     <!-- Form xóa ẩn -->
     <form id="deleteForm" method="post" style="display: none;">
-        <input type="hidden" name="_method" value="DELETE">
     </form>
     
     <div th:replace="base :: footer"></div>
@@ -206,9 +205,11 @@
     <script>
         function confirmDelete(userId, userName) {
             if (confirm('Bạn có chắc chắn muốn xóa tài khoản "' + userName + '"?')) {
-                const form = document.getElementById('deleteForm');
-                form.action = '/admin/users/delete/' + userId;
-                form.submit();
+                var form = document.getElementById('deleteForm');
+                if (form) {
+                    form.action = '/admin/users/delete/' + userId;
+                    form.submit();
+                }
             }
         }
     </script>

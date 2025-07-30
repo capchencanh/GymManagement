@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JwtUtils {
-    private static final String SECRET = "12345678901234567890123456789012"; // 32 chars for HS256
-    private static final long EXPIRATION_MS = 86400000; // 1 day
+    private static final String SECRET = "12345678901234567890123456789012";
+    private static final long EXPIRATION_MS = 86400000;
 
     public static String generateToken(Long userId, String email, String role) throws Exception {
         JWSSigner signer = new MACSigner(SECRET);

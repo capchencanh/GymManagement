@@ -15,7 +15,6 @@ public class Category {
     @Column(length = 255)
     private String description;
 
-    // Getters and setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 

@@ -29,7 +29,6 @@ public class MembershipPackage {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    // Getters and setters
     public Integer getPackageId() { return packageId; }
     public void setPackageId(Integer packageId) { this.packageId = packageId; }
     public String getName() { return name; }

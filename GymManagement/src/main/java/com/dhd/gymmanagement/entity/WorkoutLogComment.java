@@ -25,7 +25,6 @@ public class WorkoutLogComment {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    // Getters and setters
     public Integer getCommentId() { return commentId; }
     public void setCommentId(Integer commentId) { this.commentId = commentId; }
     public WorkoutLog getWorkoutLog() { return workoutLog; }

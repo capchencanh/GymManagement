@@ -39,7 +39,6 @@ public class Payment {
         PENDING, COMPLETED, FAILED
     }
 
-    // Getters and setters
     public Integer getPaymentId() { return paymentId; }
     public void setPaymentId(Integer paymentId) { this.paymentId = paymentId; }
     public UserMembership getUserMembership() { return userMembership; }

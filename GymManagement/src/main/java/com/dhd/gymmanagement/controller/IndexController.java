@@ -21,22 +21,22 @@ public class IndexController {
     @GetMapping("/admin")
     public String admin(Model model, @RequestParam(required = false) Integer categoryId) {
         if (categoryId != null) {
-            // Redirect đến controller tương ứng dựa trên categoryId
             switch (categoryId) {
-                case 7: // Quản lý tài khoản
+                case 7:
                     return "redirect:/admin/users";
-                case 8: // Quản lý huấn luyện viên
+                case 8:
                     return "redirect:/admin/trainers";
-                case 9: // Quản lý lớp tập
+                case 9:
                     return "redirect:/admin/classes";
-                case 10: // Quản lý gói tập
+                case 10:
                     return "redirect:/admin/packages";
-                case 11: // Quản lý thanh toán
+                case 11:
                     return "redirect:/admin/payments";
-                case 12: // Báo cáo thống kê
+                case 12:
                     return "redirect:/admin/reports";
+                case 13:
+                    return "redirect:/admin/devices";
                 default:
-                    // Nếu không tìm thấy category, chuyển về dashboard
                     break;
             }
         }

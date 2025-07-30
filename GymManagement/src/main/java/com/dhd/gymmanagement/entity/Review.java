@@ -36,7 +36,6 @@ public class Review {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    // Getters and setters
     public Integer getReviewId() { return reviewId; }
     public void setReviewId(Integer reviewId) { this.reviewId = reviewId; }
     public User getReviewer() { return reviewer; }
@@ -54,7 +53,6 @@ public class Review {
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
 
-    // Enum cho review_type
     public enum ReviewType {
         PT_TO_USER, USER_TO_PT, USER_TO_CLASS, USER_TO_GYM
     }

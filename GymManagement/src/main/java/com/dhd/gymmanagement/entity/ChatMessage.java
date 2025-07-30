@@ -36,7 +36,6 @@ public class ChatMessage {
         TEXT, IMAGE, FILE
     }
 
-    // Getters and setters
     public Integer getMessageId() { return messageId; }
     public void setMessageId(Integer messageId) { this.messageId = messageId; }
     public User getSender() { return sender; }

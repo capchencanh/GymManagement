@@ -49,7 +49,6 @@ public class UserGoal {
         ACTIVE, COMPLETED, PAUSED
     }
 
-    // Getters and setters
     public Integer getGoalId() { return goalId; }
     public void setGoalId(Integer goalId) { this.goalId = goalId; }
     public User getUser() { return user; }

@@ -35,7 +35,6 @@ public class PlanDetail {
     @Column(columnDefinition = "text")
     private String notes;
 
-    // Getters and setters
     public Integer getDetailId() { return detailId; }
     public void setDetailId(Integer detailId) { this.detailId = detailId; }
     public TrainingPlan getTrainingPlan() { return trainingPlan; }

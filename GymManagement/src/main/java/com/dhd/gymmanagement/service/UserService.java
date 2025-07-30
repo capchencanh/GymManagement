@@ -20,7 +20,7 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder;
     
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findAllByIsDeleted(0);
     }
     
     public Optional<User> getUserById(Integer userId) {
@@ -48,7 +48,6 @@ public class UserService {
     }
     
     public User createUser(User user) {
-        // Kiểm tra email và số điện thoại đã tồn tại
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email đã tồn tại");
         }
@@ -56,10 +55,8 @@ public class UserService {
             throw new RuntimeException("Số điện thoại đã tồn tại");
         }
         
-        // Mã hóa mật khẩu
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         
-        // Set thời gian tạo
         user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         
@@ -70,7 +67,6 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         
-        // Kiểm tra email và số điện thoại nếu thay đổi
         if (!user.getEmail().equals(userDetails.getEmail()) && 
             userRepository.existsByEmail(userDetails.getEmail())) {
             throw new RuntimeException("Email đã tồn tại");
@@ -80,7 +76,6 @@ public class UserService {
             throw new RuntimeException("Số điện thoại đã tồn tại");
         }
         
-        // Cập nhật thông tin
         user.setName(userDetails.getName());
         user.setEmail(userDetails.getEmail());
         user.setPhoneNumber(userDetails.getPhoneNumber());
@@ -91,7 +86,6 @@ public class UserService {
         user.setFitnessGoal(userDetails.getFitnessGoal());
         user.setRole(userDetails.getRole());
         
-        // Cập nhật mật khẩu nếu có
         if (userDetails.getPasswordHash() != null && !userDetails.getPasswordHash().isEmpty()) {
             user.setPasswordHash(passwordEncoder.encode(userDetails.getPasswordHash()));
         }
@@ -104,19 +98,18 @@ public class UserService {
     public void deleteUser(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
-        userRepository.delete(user);
+        user.setIsDeleted(1);
+        userRepository.save(user);
     }
     
     public boolean changePassword(Integer userId, String oldPassword, String newPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         
-        // Kiểm tra mật khẩu cũ
         if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
             return false;
         }
         
-        // Cập nhật mật khẩu mới
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         userRepository.save(user);

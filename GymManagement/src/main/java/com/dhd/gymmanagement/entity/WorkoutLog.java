@@ -39,7 +39,6 @@ public class WorkoutLog {
     @Column(name = "logged_at")
     private Timestamp loggedAt;
 
-    // Getters and setters
     public Integer getLogId() { return logId; }
     public void setLogId(Integer logId) { this.logId = logId; }
     public User getUser() { return user; }

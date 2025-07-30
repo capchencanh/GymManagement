@@ -33,7 +33,6 @@ public class UserMembership {
         ACTIVE, EXPIRED, CANCELLED
     }
 
-    // Getters and setters
     public Integer getMembershipId() { return membershipId; }
     public void setMembershipId(Integer membershipId) { this.membershipId = membershipId; }
     public User getUser() { return user; }

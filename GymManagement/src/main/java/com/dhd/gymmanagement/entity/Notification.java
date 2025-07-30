@@ -46,7 +46,6 @@ public class Notification {
         READ, UNREAD
     }
 
-    // Getters and setters
     public Integer getNotificationId() { return notificationId; }
     public void setNotificationId(Integer notificationId) { this.notificationId = notificationId; }
     public User getReceiver() { return receiver; }

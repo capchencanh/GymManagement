@@ -39,7 +39,6 @@ public class TrainingPlan {
         ACTIVE, COMPLETED, PAUSED
     }
 
-    // Getters and setters
     public Integer getPlanId() { return planId; }
     public void setPlanId(Integer planId) { this.planId = planId; }
     public User getUser() { return user; }

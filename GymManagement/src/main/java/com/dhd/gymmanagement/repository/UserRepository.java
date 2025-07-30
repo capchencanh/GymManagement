@@ -27,4 +27,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     
     @Query("SELECT u FROM User u WHERE u.role = :role AND (u.name LIKE %:keyword% OR u.email LIKE %:keyword% OR u.phoneNumber LIKE %:keyword%)")
     List<User> findByRoleAndKeyword(@Param("role") User.Role role, @Param("keyword") String keyword);
+
+    List<User> findAllByIsDeleted(int isDeleted);
 }

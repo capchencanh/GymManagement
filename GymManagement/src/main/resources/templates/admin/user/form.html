@@ -63,8 +63,8 @@
                                         <select class="form-select" id="role" th:field="*{role}" required>
                                             <option value="">Chọn vai trò</option>
                                             <option th:each="role : ${roles}" 
-                                                    th:value="${role}" 
-                                                    th:text="${role == 'ADMIN' ? 'Quản trị viên' : (role == 'PT' ? 'Huấn luyện viên' : 'Thành viên')}">
+                                                    th:value="${role.name()}" 
+                                                    th:text="${role.name() == 'ADMIN' ? 'Quản trị viên' : (role.name() == 'PT' ? 'Huấn luyện viên' : 'Thành viên')}">
                                             </option>
                                         </select>
                                         <div class="invalid-feedback">
@@ -201,7 +201,7 @@
     <div th:replace="base :: footer"></div>
     
     <script>
-        // Form validation
+
         (function() {
             'use strict';
             window.addEventListener('load', function() {
@@ -213,7 +213,7 @@
                             event.stopPropagation();
                         }
                         
-                        // Kiểm tra mật khẩu xác nhận
+                        // Kiểm tra mật khẩu
                         var password = document.getElementById('passwordHash');
                         var confirmPassword = document.getElementById('confirmPassword');
                         
@@ -230,7 +230,7 @@
             }, false);
         })();
         
-        // Toggle password visibility
+
         function togglePassword(inputId) {
             var input = document.getElementById(inputId);
             var icon = document.getElementById(inputId + 'Icon');
@@ -246,7 +246,7 @@
             }
         }
         
-        // Kiểm tra mật khẩu xác nhận real-time
+
         document.getElementById('confirmPassword').addEventListener('input', function() {
             var password = document.getElementById('passwordHash');
             var confirmPassword = this;

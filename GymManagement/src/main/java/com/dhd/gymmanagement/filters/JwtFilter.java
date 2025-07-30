@@ -25,7 +25,6 @@ public class JwtFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String header = httpRequest.getHeader("Authorization");
         String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
 
         if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
@@ -33,52 +32,60 @@ public class JwtFilter implements Filter {
             return;
         }
 
-        logger.debug("JwtFilter processing request: {} {} with Authorization header: {}",
-                httpRequest.getMethod(), requestPath, (header != null && header.startsWith("Bearer ")));
+        if (requestPath.startsWith("/css/") || requestPath.startsWith("/js/") || 
+            requestPath.startsWith("/images/") || requestPath.startsWith("/static/")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        logger.debug("JwtFilter processing request: {} {}", httpRequest.getMethod(), requestPath);
 
         String token = null;
         
-        // Kiểm tra Authorization header trước
+        String header = httpRequest.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
+            logger.debug("Found JWT token in Authorization header");
         } else {
-            // Kiểm tra JWT cookie nếu không có header
             Cookie[] cookies = httpRequest.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
                     if ("jwt_token".equals(cookie.getName())) {
                         token = cookie.getValue();
+                        logger.debug("Found JWT token in cookie");
                         break;
                     }
                 }
             }
         }
 
-        if (token != null) {
+        if (token != null && !token.isEmpty()) {
             try {
                 Map<String, Object> claims = JwtUtils.validateTokenAndGetClaims(token);
-                if (claims != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (claims != null) {
                     String email = (String) claims.get("email");
                     String role = (String) claims.get("role");
-                    // Thêm prefix "ROLE_" cho Spring Security
+                    
                     String roleWithPrefix = "ROLE_" + role;
                     List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(roleWithPrefix));
+                    
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(email, null, authorities);
+                    
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    logger.debug("Successfully authenticated user '{}' with role '{}' from token for request: {}", email, roleWithPrefix, requestPath);
-                } else if (claims == null) {
-                    logger.warn("Token validation failed (claims is null) for request: {}. Token: {}", requestPath, token);
+                    
+                    logger.debug("Successfully authenticated user '{}' with role '{}' for request: {}", 
+                               email, roleWithPrefix, requestPath);
                 } else {
-                    logger.debug("Authentication already exists in SecurityContext for user '{}', request: {}",
-                            SecurityContextHolder.getContext().getAuthentication().getName(), requestPath);
+                    logger.warn("Token validation failed (claims is null) for request: {}", requestPath);
+                    SecurityContextHolder.clearContext();
                 }
             } catch (Exception e) {
-                logger.warn("Invalid JWT token for request {}: {}. Error: {}", requestPath, token, e.getMessage());
+                logger.warn("Invalid JWT token for request {}: {}", requestPath, e.getMessage());
                 SecurityContextHolder.clearContext();
             }
         } else {
-            logger.debug("No Authorization Bearer token found for request: {}", requestPath);
+            logger.debug("No JWT token found for request: {}", requestPath);
         }
 
         chain.doFilter(request, response);

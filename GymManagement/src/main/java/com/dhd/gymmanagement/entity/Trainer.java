@@ -20,7 +20,6 @@ public class Trainer {
     @Column(columnDefinition = "text")
     private String schedule;
 
-    // Getters and setters
     public Integer getTrainerId() { return trainerId; }
     public void setTrainerId(Integer trainerId) { this.trainerId = trainerId; }
     public User getUser() { return user; }

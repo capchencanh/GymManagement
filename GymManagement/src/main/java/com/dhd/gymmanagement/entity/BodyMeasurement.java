@@ -42,7 +42,6 @@ public class BodyMeasurement {
     @Column(name = "measured_at")
     private Timestamp measuredAt;
 
-    // Getters and setters
     public Integer getMeasurementId() { return measurementId; }
     public void setMeasurementId(Integer measurementId) { this.measurementId = measurementId; }
     public User getUser() { return user; }
